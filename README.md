@@ -1,1 +1,1 @@
-# yapyuyou.github.io swag
+# to remain incomplete indefinitely
