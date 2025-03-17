@@ -1,0 +1,487 @@
+openapi: 3.0.3
+info:
+  title: JS Portal - JSKG API
+  version: 1.0.11
+tags:
+  - name: Graph APIs
+    description: To be done by Pillar 1 in the interim and subsequently handed over to vendors. The `/courses` API is currently blocked by the TGS dataset due to missing/dead MySF links.
+  - name: Data APIs
+    description: To supply information about demand for specific job roles by sector/company.
+    
+paths:
+  /listOfJobs:
+    get:
+      tags:
+        - Graph APIs
+      summary: Get list of jobs that have valid pathways
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Job'
+              example:
+                - title: Company Director
+                  code: '11202'
+                - title: Risk Management Manager
+                  code: '12133'
+                - title: Financial Services Manager
+                  code: '13461'
+        '404':
+          description: List of jobs not found
+          
+  /pathways/{ssocCode}:
+    get:
+      tags:
+        - Graph APIs
+      parameters:
+      - name: ssocCode
+        example: '25122'
+        in: path
+        description: Name of the job to analyse
+        required: true
+        schema:
+          type: string
+      summary: Retrieve info about pathways from a single job
+      description: Provides a job name from `/listOfJobs` to get the top 10 roles from/to that job, and the skills similarity, skills gap, median wage, and job count for each entry. 
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 10
+                maxItems: 10
+                items: 
+                  $ref: '#/components/schemas/Pathway'
+              example:
+                - destinationRole: 
+                    title: 'Software Engineer'
+                    code: '12323'
+                  similarityScore: 'High'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 7500
+                  jobCount: 500
+                - destinationRole: 
+                    title: 'Marketing Manager'
+                    code: '14333'
+                  similarityScore: 'Medium'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 5800
+                  jobCount: 250
+                - destinationRole: 
+                    title: 'Financial Analyst'
+                    code: '15423'
+                  similarityScore: 'Low'
+                  skillsGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  medianWage: 6700
+                  jobCount: 120
+                - destinationRole: 
+                    title: 'Operations Manager'
+                    code: '12363'                
+                  similarityScore: 'High'
+                  skillsGap: ['Skill 1']
+                  medianWage: 6200
+                  jobCount: 300
+                - destinationRole: 
+                    title: 'Cybersecurity Specialist'
+                    code: '12723'                
+                  similarityScore: 'Medium'
+                  skillsGap: ['Skill 1']
+                  medianWage: 8000
+                  jobCount: 180
+                - destinationRole: 
+                    title: 'Data Scientist'
+                    code: '19323'               
+                  similarityScore: 'High'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 9500
+                  jobCount: 400
+                - destinationRole: 
+                    title: 'Human Resources Manager'
+                    code: '12123'               
+                  similarityScore: 'Medium'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 6000
+                  jobCount: 220
+                - destinationRole: 
+                    title: 'Retail Store Manager'
+                    code: '12303'              
+                  similarityScore: 'Low'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 4500
+                  jobCount: 150
+                - destinationRole: 
+                    title: 'Mechanical Engineer'
+                    code: '17323'              
+                  similarityScore: 'Medium'
+                  skillsGap: ['Skill 1', 'Skill 2']
+                  medianWage: 7200
+                  jobCount: 280
+                - destinationRole: 
+                    title: 'Project Manager'
+                    code: '13873'             
+                  similarityScore: 'High'
+                  skillsGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  medianWage: 7000
+                  jobCount: 350
+        '404':
+          description: Job not found
+          
+  /sectors/jobCount/{ssocCode}/{quarter}:
+    get:
+      tags:
+        - Data APIs
+      parameters:
+      - name: ssocCode
+        example: '25122'
+        in: path
+        description: Name of the job to analyse
+        required: true
+        schema:
+          type: string
+      - name: quarter
+        example: 2025Q1
+        in: path
+        description: Time period for the data, will return the last 4 quarters up until the one specified (excluding). E.g. 2025Q1 will return data for the full year of 2024
+        required: true
+        schema:
+          type: string
+      - name: resultCount
+        example: 20
+        in: query
+        description: Max number of results, if not provided to return X
+        schema:
+          type: number
+      - name: jobCountThreshold
+        example: 20
+        in: query
+        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response
+        schema:
+          type: number    
+      summary: Get the demand for this job role
+      description: To include all sectors even if job count is 0. Sort by job count descending (highest first)
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/SectorResponse'
+              example:
+                ssocVersion: '2020'
+                ssocTitle: 'Web And Mobile Applications Developer'
+                data:
+                - sfwSectorTitle: 'Financial Services'
+                  jobCount: 999
+                - sfwSectorTitle: 'Accountancy'
+                  jobCount: 998
+                - sfwSectorTitle: 'Food Services'
+                  jobCount: 888
+                - sfwSectorTitle: 'Energy & Power'
+                  jobCount: 123
+        '400':
+          description: Bad request
+        '404':
+          description: Demand not found
+        '401':
+          description: Unauthorized (if not public)
+        '500':
+          description: Server Error
+          
+  /companies/jobCount/{ssocCode}/{sfwSectorTitle}/{quarter}:
+    get:
+      tags:
+        - Data APIs
+      parameters:
+      - name: ssocCode
+        example: '25122'
+        in: path
+        description: Name of the job to analyse.
+        required: true
+        schema:
+          type: string
+      - name: sfwSectorTitle
+        example: 'Financial Services'
+        in: path
+        description: Name of the sector in TitleCase, must support 'All' option
+        required: true
+        schema: 
+          type: string
+      - name: quarter
+        example: 2025Q1
+        in: path
+        description: Time period for the data, will return the last 4 quarters up until the one specified (excluding). E.g. 2025Q1 will return data for the full year of 2024
+        required: true
+        schema:
+          type: string
+      - name: resultCount
+        example: 20
+        in: query
+        description: Max number of results, if not provided to return X
+        schema:
+          type: number
+      - name: jobCountThreshold
+        example: 20
+        in: query
+        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response
+        schema:
+          type: number  
+      summary: Get job count per company with sector annotations ordered by job count
+      description: On client side we will first be querying across all sectors, if a sector filter is selected we will then run a sector specific query to display only the selected sector's entries. To exclude companies with 0 job count. Sort by job count descending (highest first)
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/CompanyResponse'
+              example:
+                ssocVersion: '2020'
+                ssocTitle: 'Web And Mobile Applications Developer'
+                data:
+                  - companyName: 'DBS Bank LTD.'
+                    jobCount: 123
+                    sfwSectorTitle: 'Financial Services'
+                    isRecruiter: 0
+                  - companyName: 'Some food company'
+                    jobCount: 45
+                    sfwSectorTitle: 'Food Services'
+                    isRecruiter: 0
+                  - companyName: 'Singapore Power'
+                    jobCount: 23
+                    sfwSectorTitle: 'Energy & Power'
+                    isRecruiter: 0
+                  - companyName: 'Singapore Telecom Services'
+                    jobCount: 20
+                    sfwSectorTitle: 'Infocomm Technology'
+                    isRecruiter: 0
+                  - companyName: 'Maximum Talent'
+                    jobCount: 13
+                    sfwSectorTitle: 'Recruitment Agencies'
+                    isRecruiter: 1
+                  - companyName: 'OCBC Bank'
+                    jobCount: 5
+                    sfwSectorTitle: 'Financial Services'
+                    isRecruiter: 0
+                  - companyName: 'Maybank'
+                    jobCount: 1
+                    sfwSectorTitle: 'Financial Services'
+                    isRecruiter: 0
+        '400':
+          description: Bad request
+        '404':
+          description: Demand not found
+        '401':
+          description: Unauthorized (if not public)
+        '500':
+          description: Server Error
+          
+  /skills/{ssocCode}:
+    get:
+      tags:
+        - Graph APIs
+      parameters:
+      - name: ssocCode
+        example: '25122'
+        in: path
+        description: Name of the job to analyse
+        required: true
+        schema:
+          type: string
+      summary: Get the top 10 skills required for this job role
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: 'Microsoft Access'
+              example:
+              - Javascript
+              - Python
+              - Android
+              - Kotlin
+              - C
+              - C++
+              - C#
+              - Unity
+              - Assembly
+              - Go
+        '404':
+          description: Skills not found
+
+  /courses:
+    get:
+      tags:
+        - Graph APIs
+      parameters:
+        - name: skills
+          in: query
+          description: "Comma-separated list of skills"
+          required: true
+          schema:
+            type: string
+            format: csv
+          example: "python,javascript,react"
+      summary: Get list of courses based on a provided list of skills
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+        '404':
+          description: Courses not found
+      
+components:
+  schemas:
+    Job:
+      required:
+        - title
+        - code
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'Web and mobile applications developer'
+        code:
+          type: string
+          example: '25122'
+    Pathway:
+      required:
+        - destinationRole
+        - similarityScore
+        - skillsGap
+        - medianWage
+        - jobCount
+      type: object
+      properties:
+        destinationRole:
+          type: object
+          properties:
+            title:
+              type: string
+              example: 'Web and mobile applications developer'
+            code:
+              type: string
+              example: '25122'
+        similarityScore:
+          type: string
+          example: 'Medium'
+        skillsGap:
+          type: array
+          items:
+            type: string
+            example: 'Tools Development'
+        medianWage:
+          type: number
+          example: 6100
+        jobCount:
+          type: number
+          example: 100
+    SectorResponse:
+      required:
+        - ssocTitle
+        - ssocVersion
+        - data
+      type: object
+      properties:
+        ssocTitle:
+          type: string
+          example: 'Web And Mobile Applications Developer'
+        ssocVersion:
+          type: string
+          example: '2020'
+        data:
+          type: array
+          $ref: "#/components/schemas/Sector"
+    Sector:
+      required:
+        - sfwSectorTitle
+        - jobCount
+      type: object
+      properties:
+        sfwSectorTitle:
+          type: string
+          example: 'Financial Services'
+        jobCount:
+          type: number
+          example: 345
+    CompanyResponse:
+      required:
+        - ssocTitle
+        - ssocVersion
+        - data
+      type: object
+      properties:
+        ssocTitle:
+          type: string
+          example: 'Web And Mobile Applications Developer'
+        ssocVersion:
+          type: string
+          example: '2020'
+        data:
+          type: array
+          $ref: "#/components/schemas/Company"
+    Company:
+      required:
+        - companyName
+        - jobCount
+        - sfwSectorTitle
+        - isRecruiter
+      type: object
+      properties:
+        companyName:
+          type: string
+          example: 'DBS Bank'
+        jobCount:
+          type: number
+          example: 345
+        sfwSectorTitle:
+          type: string
+          example: 'Financial Services'
+        isRecruiter:
+          type: number
+          description: represents a boolean, can only be either 1 or 0
+          example: 0
+    Course:
+      required:
+        - name
+        - cost
+        - duration
+        - skills
+        - msfLink
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Certified Ethical Hacker (CEH)'
+        cost:
+          type: string
+          example: '$2,500'
+        duration:
+          type: string
+          example: '40 hours'
+        skills:
+          type: array
+          items:
+            type: string
+            example: 'Microsoft Access'
+        msfLink:
+          type: string
+          example: 'https://www.myskillsfuture.gov.sg/content/portal/en/training-exchange/course-directory/course-detail.html?courseReferenceNumber=TGS-2023035654'
