@@ -323,19 +323,43 @@ paths:
           description: Skills not found
 
   /courses:
-    get:
+    post:
       tags:
         - Graph APIs
-      parameters:
-        - name: skills
-          in: query
-          description: "Comma-separated list of skills"
-          required: true
-          schema:
-            type: string
-            format: csv
-          example: "python,javascript,react"
       summary: Get list of courses based on a provided list of skills
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input_dict:
+                  type: object
+                  properties:
+                    skill_list:
+                      type: array
+                      items:
+                        type: string
+                      example:
+                        - "compensation management"
+                        - "benefits management"
+                        - "cost management"
+                        - "python"
+                    fees_importance:
+                      type: integer
+                      minimum: 0
+                      maximum: 100
+                      example: 50
+                    duration_importance:
+                      type: integer
+                      minimum: 0
+                      maximum: 100
+                      example: 50
+                  required:
+                    - skill_list
+                    - fees_importance
+                    - duration_importance
       responses:
         '200':
           description: Successful operation
@@ -409,6 +433,7 @@ components:
           example: '2020'
         data:
           type: array
+          items:
           $ref: "#/components/schemas/Sector"
     Sector:
       required:
@@ -437,6 +462,7 @@ components:
           example: '2020'
         data:
           type: array
+          items:
           $ref: "#/components/schemas/Company"
     Company:
       required:
@@ -473,10 +499,10 @@ components:
           example: 'Certified Ethical Hacker (CEH)'
         cost:
           type: string
-          example: '$2,500'
+          example: '2500'
         duration:
           type: string
-          example: '40 hours'
+          example: '40'
         skills:
           type: array
           items:
