@@ -24,12 +24,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Job'
               example:
-                - title: Company Director
-                  code: '11202'
-                - title: Risk Management Manager
-                  code: '12133'
-                - title: Financial Services Manager
-                  code: '13461'
+                - ssocTitle: Company Director
+                  ssocCode: '11202'
+                - ssocTitle: Risk Management Manager
+                  ssocCode: '12133'
+                - ssocTitle: Financial Services Manager
+                  ssocCode: '13461'
         '404':
           description: List of jobs not found
           
@@ -60,74 +60,84 @@ paths:
                   $ref: '#/components/schemas/Pathway'
               example:
                 - destinationRole: 
-                    title: 'Software Engineer'
-                    code: '12323'
-                  similarityScore: 'High'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 7500
+                    ssocTitle: 'Software Engineer'
+                    ssocCode: '12323'
+                  ssocSimilarityScore: 0.85
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 7500
                   jobCount: 500
                 - destinationRole: 
-                    title: 'Marketing Manager'
-                    code: '14333'
-                  similarityScore: 'Medium'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 5800
+                    ssocTitle: 'Marketing Manager'
+                    ssocCode: '14333'
+                  ssocSimilarityScore: 0.55
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 5800
                   jobCount: 250
                 - destinationRole: 
-                    title: 'Financial Analyst'
-                    code: '15423'
-                  similarityScore: 'Low'
-                  skillsGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
-                  medianWage: 6700
+                    ssocTitle: 'Financial Analyst'
+                    ssocCode: '15423'
+                  ssocSimilarityScore: 0.20
+                  ssocSimilarityCategory: 'Low'
+                  ssocSkillGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  ssocMedianWage: 6700
                   jobCount: 120
                 - destinationRole: 
-                    title: 'Operations Manager'
-                    code: '12363'                
-                  similarityScore: 'High'
-                  skillsGap: ['Skill 1']
-                  medianWage: 6200
+                    ssocTitle: 'Operations Manager'
+                    ssocCode: '12363'
+                  ssocSimilarityScore: 0.80                
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1']
+                  ssocMedianWage: 6200
                   jobCount: 300
                 - destinationRole: 
-                    title: 'Cybersecurity Specialist'
-                    code: '12723'                
-                  similarityScore: 'Medium'
-                  skillsGap: ['Skill 1']
-                  medianWage: 8000
+                    ssocTitle: 'Cybersecurity Specialist'
+                    ssocCode: '12723'
+                  ssocSimilarityScore: 0.60                
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1']
+                  ssocMedianWage: 8000
                   jobCount: 180
                 - destinationRole: 
-                    title: 'Data Scientist'
-                    code: '19323'               
-                  similarityScore: 'High'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 9500
+                    ssocTitle: 'Data Scientist'
+                    ssocCode: '19323'      
+                  ssocSimilarityScore: 0.75         
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 9500
                   jobCount: 400
                 - destinationRole: 
-                    title: 'Human Resources Manager'
-                    code: '12123'               
-                  similarityScore: 'Medium'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 6000
+                    ssocTitle: 'Human Resources Manager'
+                    ssocCode: '12123' 
+                  ssocSimilarityScore: 0.45              
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 6000
                   jobCount: 220
                 - destinationRole: 
-                    title: 'Retail Store Manager'
-                    code: '12303'              
-                  similarityScore: 'Low'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 4500
+                    ssocTitle: 'Retail Store Manager'
+                    ssocCode: '12303'
+                  ssocSimilarityScore: 0.30              
+                  ssocSimilarityCategory: 'Low'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 4500
                   jobCount: 150
                 - destinationRole: 
-                    title: 'Mechanical Engineer'
-                    code: '17323'              
-                  similarityScore: 'Medium'
-                  skillsGap: ['Skill 1', 'Skill 2']
-                  medianWage: 7200
+                    ssocTitle: 'Mechanical Engineer'
+                    ssocCode: '17323'  
+                  ssocSimilarityScore: 0.60            
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 7200
                   jobCount: 280
                 - destinationRole: 
-                    title: 'Project Manager'
-                    code: '13873'             
-                  similarityScore: 'High'
-                  skillsGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
-                  medianWage: 7000
+                    ssocTitle: 'Project Manager'
+                    ssocCode: '13873'     
+                  ssocSimilarityScore: 0.70        
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  ssocMedianWage: 7000
                   jobCount: 350
         '404':
           description: Job not found
@@ -376,43 +386,47 @@ components:
   schemas:
     Job:
       required:
-        - title
-        - code
+        - ssocTitle
+        - ssocCode
       type: object
       properties:
-        title:
+        ssocTitle:
           type: string
           example: 'Web and mobile applications developer'
-        code:
+        ssocCode:
           type: string
           example: '25122'
     Pathway:
       required:
         - destinationRole
-        - similarityScore
-        - skillsGap
-        - medianWage
+        - ssocSimilarityScore
+        - ssocSimilarityCategory
+        - ssocSkillGap
+        - ssocMedianWage
         - jobCount
       type: object
       properties:
         destinationRole:
           type: object
           properties:
-            title:
+            ssocTitle:
               type: string
               example: 'Web and mobile applications developer'
-            code:
+            ssocCode:
               type: string
               example: '25122'
-        similarityScore:
+        ssocSimilarityScore:
+          type: number
+          example: 0.75
+        ssocSimilarityCategory:
           type: string
           example: 'Medium'
-        skillsGap:
+        ssocSkillGap:
           type: array
           items:
             type: string
             example: 'Tools Development'
-        medianWage:
+        ssocMedianWage:
           type: number
           example: 6100
         jobCount:
@@ -487,23 +501,27 @@ components:
           example: 0
     Course:
       required:
-        - name
-        - cost
-        - duration
-        - skills
+        - courseTitle
+        - courseReferenceNumber
+        - courseFee
+        - courseDurationHour
+        - courseSkillTaught
         - msfLink
       type: object
       properties:
-        name:
+        courseTitle:
           type: string
           example: 'Certified Ethical Hacker (CEH)'
-        cost:
+        courseReferenceNumber:
+          type: string
+          example: 'TGS-2018504800'
+        courseFee:
           type: string
           example: '2500'
-        duration:
+        courseDurationHour:
           type: string
           example: '40'
-        skills:
+        courseSkillTaught:
           type: array
           items:
             type: string
