@@ -150,21 +150,21 @@ paths:
       - name: ssocCode
         example: '25122'
         in: path
-        description: Name of the job to analyse
+        description: ssoc of the job to analyse, cannot be null
         required: true
         schema:
           type: string
       - name: quarter
         example: 2025Q1
         in: path
-        description: Time period for the data, will return the last 4 quarters up until the one specified (excluding). E.g. 2025Q1 will return data for the full year of 2024
+        description: Time period for the data
         required: true
         schema:
           type: string
       - name: resultCount
         example: 20
         in: query
-        description: Max number of results, if not provided to return X
+        description: Max number of results, if not provided to return 50
         schema:
           type: number
       - name: jobCountThreshold
@@ -174,7 +174,7 @@ paths:
         schema:
           type: number    
       summary: Get the demand for this job role
-      description: To include all sectors even if job count is 0. Sort by job count descending (highest first)
+      description: To include all sectors even if job count is 0. Sort by job count descending (highest first). Data refresh cycle at 28 days after end of each quarter.
       responses:
         '200':
           description: Successful operation
@@ -198,6 +198,33 @@ paths:
                   jobCount: 123
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  body:
+                    type: string
+                    description: JSON string containing the details
+              examples:
+                emptyCodeOrQuarter:
+                  summary: ssocCode / quarter empty
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"ssocCode and quarter cannot be empty\"}"
+                invalidSsocCodeFormat:
+                  summary: ssocCode format invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid ssocCode format. Expect format: Numeric string (e.g. 12345)\"}"
+                invalidQuarterFormat:
+                  summary: quarter format invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid quarter format. Expect format: YYYYQn (e.g. 2025Q1)\"}"
         '404':
           description: Demand not found
         '401':
@@ -213,38 +240,38 @@ paths:
       - name: ssocCode
         example: '25122'
         in: path
-        description: Name of the job to analyse.
+        description: ssoc of the job to analyse, cannot be null
         required: true
         schema:
           type: string
       - name: sfwSectorTitle
         example: 'Financial Services'
         in: path
-        description: Name of the sector in TitleCase, must support 'All' option
+        description: Name of the sector in URL encoded TitleCase, must support 'All' option that excludes the 'null' sector. Cannot be null
         required: true
         schema: 
           type: string
       - name: quarter
         example: 2025Q1
         in: path
-        description: Time period for the data, will return the last 4 quarters up until the one specified (excluding). E.g. 2025Q1 will return data for the full year of 2024
+        description: Time period for the data
         required: true
         schema:
           type: string
       - name: resultCount
         example: 20
         in: query
-        description: Max number of results, if not provided to return X
+        description: Max number of results, if not provided to return 50
         schema:
           type: number
       - name: jobCountThreshold
         example: 20
         in: query
-        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response
+        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response. Defaults to 1
         schema:
           type: number  
       summary: Get job count per company with sector annotations ordered by job count
-      description: On client side we will first be querying across all sectors, if a sector filter is selected we will then run a sector specific query to display only the selected sector's entries. To exclude companies with 0 job count. Sort by job count descending (highest first)
+      description: On client side we will first be querying across all sectors, if a sector filter is selected we will then run a sector specific query to display only the selected sector's entries. To exclude companies with 0 job count. Sort by job count descending (highest first). Data refresh cycle at 28 days after end of each quarter.
       responses:
         '200':
           description: Successful operation
@@ -288,6 +315,33 @@ paths:
                     isRecruiter: 0
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 400
+                  body:
+                    type: string
+                    description: JSON string containing the details
+              examples:
+                emptyCodeOrQuarter:
+                  summary: ssocCode / sfwSectorTitle / quarter empty
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"ssocCode, sfwSectorTitle, and quarter cannot be empty\"}"
+                invalidSsocCodeFormat:
+                  summary: ssocCode format invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid ssocCode format. Expect format: Numeric string (e.g. 12345)\"}"
+                invalidQuarterFormat:
+                  summary: quarter format invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid quarter format. Expect format: YYYYQn (e.g. 2025Q1)\"}"
         '404':
           description: Demand not found
         '401':
@@ -488,12 +542,14 @@ components:
       properties:
         companyName:
           type: string
+          description: Name of the company, cannot be null
           example: 'DBS Bank'
         jobCount:
           type: number
           example: 345
         sfwSectorTitle:
           type: string
+          description: Name of the sector, cannot be null
           example: 'Financial Services'
         isRecruiter:
           type: number
