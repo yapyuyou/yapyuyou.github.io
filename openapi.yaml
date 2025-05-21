@@ -170,7 +170,7 @@ paths:
       - name: jobCountThreshold
         example: 20
         in: query
-        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response
+        description: Minimum jobCount that the results should have e.g. if set to 20, companies with 19 or less jobCount will be omitted from the response. Defaults to 1
         schema:
           type: number    
       summary: Get the demand for this job role
@@ -220,6 +220,11 @@ paths:
                   value:
                     statusCode: 400
                     body: "{\"message\": \"Invalid ssocCode format. Expect format: Numeric string (e.g. 12345)\"}"
+                invalidSsocCode:
+                  summary: ssocCode invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid ssocCode\"}"
                 invalidQuarterFormat:
                   summary: quarter format invalid
                   value:
@@ -337,6 +342,11 @@ paths:
                   value:
                     statusCode: 400
                     body: "{\"message\": \"Invalid ssocCode format. Expect format: Numeric string (e.g. 12345)\"}"
+                invalidSsocCode:
+                  summary: ssocCode invalid
+                  value:
+                    statusCode: 400
+                    body: "{\"message\": \"Invalid ssocCode\"}"
                 invalidQuarterFormat:
                   summary: quarter format invalid
                   value:
