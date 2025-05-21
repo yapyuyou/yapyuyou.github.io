@@ -174,7 +174,7 @@ paths:
         schema:
           type: number    
       summary: Get the demand for this job role
-      description: To include all sectors even if job count is 0. Sort by job count descending (highest first). Data refresh cycle at 28 days after end of each quarter.
+      description: Sort by job count descending (highest first). Data refresh cycle at 28 days after end of each quarter.
       responses:
         '200':
           description: Successful operation
