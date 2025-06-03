@@ -33,7 +33,7 @@ paths:
         '404':
           description: List of jobs not found
           
-  /pathways/{ssocCode}:
+  /pathwaysTo/{ssocCode}:
     get:
       tags:
         - Graph APIs
@@ -45,8 +45,8 @@ paths:
         required: true
         schema:
           type: string
-      summary: Retrieve info about pathways from a single job
-      description: Provides a job name from `/listOfJobs` to get the top 10 roles from/to that job, and the skills similarity, skills gap, median wage, and job count for each entry. 
+      summary: Retrieve info about pathways to 10 other jobs from the specified job
+      description: Provides a job name from `/listOfJobs` to get the top 10 roles from that job, and the skills similarity, skills gap, median wage, and job count for each entry.
       responses:
         '200':
           description: Successful operation
@@ -57,7 +57,7 @@ paths:
                 minItems: 10
                 maxItems: 10
                 items: 
-                  $ref: '#/components/schemas/Pathway'
+                  $ref: '#/components/schemas/PathwayTo'
               example:
                 - destinationRole: 
                     ssocTitle: 'Software Engineer'
@@ -132,6 +132,115 @@ paths:
                   ssocMedianWage: 7200
                   jobCount: 280
                 - destinationRole: 
+                    ssocTitle: 'Project Manager'
+                    ssocCode: '13873'     
+                  ssocSimilarityScore: 0.70        
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  ssocMedianWage: 7000
+                  jobCount: 350
+        '404':
+          description: Job not found
+          
+  /pathwaysFrom/{ssocCode}:
+    get:
+      tags:
+        - Graph APIs
+      parameters:
+      - name: ssocCode
+        example: '25122'
+        in: path
+        description: Name of the job to analyse
+        required: true
+        schema:
+          type: string
+      summary: Retrieve info about pathways to the specified job from 10 other jobs
+      description: Provides a job name from `/listOfJobs` to get the top 10 roles that can lead to that job, and the skills similarity, skills gap, median wage, and job count for each entry.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                minItems: 10
+                maxItems: 10
+                items: 
+                  $ref: '#/components/schemas/PathwayFrom'
+              example:
+                - sourceRole: 
+                    ssocTitle: 'Software Engineer'
+                    ssocCode: '12323'
+                  ssocSimilarityScore: 0.85
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 7500
+                  jobCount: 500
+                - sourceRole: 
+                    ssocTitle: 'Marketing Manager'
+                    ssocCode: '14333'
+                  ssocSimilarityScore: 0.55
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 5800
+                  jobCount: 250
+                - sourceRole: 
+                    ssocTitle: 'Financial Analyst'
+                    ssocCode: '15423'
+                  ssocSimilarityScore: 0.20
+                  ssocSimilarityCategory: 'Low'
+                  ssocSkillGap: ['Skill 1', 'Skill 2', 'Skill 3', 'Skill 4']
+                  ssocMedianWage: 6700
+                  jobCount: 120
+                - sourceRole: 
+                    ssocTitle: 'Operations Manager'
+                    ssocCode: '12363'
+                  ssocSimilarityScore: 0.80                
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1']
+                  ssocMedianWage: 6200
+                  jobCount: 300
+                - sourceRole: 
+                    ssocTitle: 'Cybersecurity Specialist'
+                    ssocCode: '12723'
+                  ssocSimilarityScore: 0.60                
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1']
+                  ssocMedianWage: 8000
+                  jobCount: 180
+                - sourceRole: 
+                    ssocTitle: 'Data Scientist'
+                    ssocCode: '19323'      
+                  ssocSimilarityScore: 0.75         
+                  ssocSimilarityCategory: 'High'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 9500
+                  jobCount: 400
+                - sourceRole: 
+                    ssocTitle: 'Human Resources Manager'
+                    ssocCode: '12123' 
+                  ssocSimilarityScore: 0.45              
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 6000
+                  jobCount: 220
+                - sourceRole: 
+                    ssocTitle: 'Retail Store Manager'
+                    ssocCode: '12303'
+                  ssocSimilarityScore: 0.30              
+                  ssocSimilarityCategory: 'Low'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 4500
+                  jobCount: 150
+                - sourceRole: 
+                    ssocTitle: 'Mechanical Engineer'
+                    ssocCode: '17323'  
+                  ssocSimilarityScore: 0.60            
+                  ssocSimilarityCategory: 'Medium'
+                  ssocSkillGap: ['Skill 1', 'Skill 2']
+                  ssocMedianWage: 7200
+                  jobCount: 280
+                - sourceRole: 
                     ssocTitle: 'Project Manager'
                     ssocCode: '13873'     
                   ssocSimilarityScore: 0.70        
@@ -460,7 +569,7 @@ components:
         ssocCode:
           type: string
           example: '25122'
-    Pathway:
+    PathwayTo:
       required:
         - destinationRole
         - ssocSimilarityScore
@@ -471,6 +580,42 @@ components:
       type: object
       properties:
         destinationRole:
+          type: object
+          properties:
+            ssocTitle:
+              type: string
+              example: 'Web and mobile applications developer'
+            ssocCode:
+              type: string
+              example: '25122'
+        ssocSimilarityScore:
+          type: number
+          example: 0.75
+        ssocSimilarityCategory:
+          type: string
+          example: 'Medium'
+        ssocSkillGap:
+          type: array
+          items:
+            type: string
+            example: 'Tools Development'
+        ssocMedianWage:
+          type: number
+          example: 6100
+        jobCount:
+          type: number
+          example: 100
+    PathwayFrom:
+      required:
+        - sourceRole
+        - ssocSimilarityScore
+        - ssocSimilarityCategory
+        - ssocSkillGap
+        - ssocMedianWage
+        - jobCount
+      type: object
+      properties:
+        sourceRole:
           type: object
           properties:
             ssocTitle:
@@ -512,7 +657,7 @@ components:
         data:
           type: array
           items:
-          $ref: "#/components/schemas/Sector"
+            $ref: "#/components/schemas/Sector"
     Sector:
       required:
         - sfwSectorTitle
@@ -541,7 +686,7 @@ components:
         data:
           type: array
           items:
-          $ref: "#/components/schemas/Company"
+            $ref: "#/components/schemas/Company"
     Company:
       required:
         - companyName
